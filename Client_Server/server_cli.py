@@ -31,3 +31,6 @@ class ServerCMD(cmd.Cmd):
 
     def do_get_connected_clients(self, args):
         print(self.server.get_connected_clients())
+
+if __name__ == "__main__":
+    ServerCMD().cmdloop()

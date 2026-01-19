@@ -1,9 +1,5 @@
 import socket
 import threading
-import cmd
-from unittest import case
-
-import server_cli
 import json
 
 class Server:
@@ -27,12 +23,20 @@ class Server:
         return self.is_running
 
     def start_server(self):
+        if self.is_running:
+            print("Server is already running.")
+            return
+
         self.is_running = True
         self._bind_addr()
         self.listening_thread = threading.Thread(target=self._listen_for_clients)
         self.listening_thread.start()
 
     def stop_server(self):
+        if not self.is_running:
+            print("Server is not running.")
+            return
+
         self.is_running = False
         self.socket.close()
         self.listening_thread.join()
@@ -154,7 +158,3 @@ class Server:
             case _:
                 print(f"Missing data in message parsing: {json_data}")
                 return None
-
-
-if __name__ == '__main__':
-    server_cli.ServerCMD().cmdloop()
