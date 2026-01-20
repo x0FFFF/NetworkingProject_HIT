@@ -1,0 +1,11 @@
+msg_id,app_protocol,src_app,src_port,dst_app,dst_port,message,timestamp
+1,HTTP,Chrome_Browser,54321,Apache_Web_Server,80,GET /index.html HTTP/1.1,2026-01-20T16:29:19Z
+2,HTTP,Apache_Web_Server,80,Chrome_Browser,54321,HTTP/1.1 200 OK (text/html),2026-01-20T16:29:19Z
+3,DNS,System_Resolver,60123,Google_DNS,53,Standard query 0x1234 A google.com,2026-01-20T16:29:20Z
+4,DNS,Google_DNS,53,System_Resolver,60123,Standard query response 0x1234 A 142.250.190.46,2026-01-20T16:29:20Z
+5,MQTT,Temperature_Sensor,1883,Mosquitto_Broker,1883,PUBLISH topic='home/livingroom/temp' payload='22.5C',2026-01-20T16:29:21Z
+6,MQTT,Mosquitto_Broker,1883,Dashboard_App,49152,PUBLISH topic='home/livingroom/temp' payload='22.5C',2026-01-20T16:29:21Z
+7,SMTP,Outlook_Client,587,Gmail_SMTP_Server,587,MAIL FROM:<user@example.com>,2026-01-20T16:29:22Z
+8,SMTP,Gmail_SMTP_Server,587,Outlook_Client,587,250 2.1.0 OK,2026-01-20T16:29:22Z
+9,HTTP,Mobile_App,44322,API_Gateway,443,POST /api/v1/login HTTP/1.1,2026-01-20T16:29:23Z
+10,HTTP,API_Gateway,443,Mobile_App,44322,HTTP/1.1 201 Created,2026-01-20T16:29:23Z
