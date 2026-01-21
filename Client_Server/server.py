@@ -73,7 +73,13 @@ class Server:
 
 
     def _assign_user(self, username, conn):
+        if username in self.client_connections:
+            # username already taken
+            self._send_error_to_client("Username already taken. Please choose another.", conn)
+            return False
         self.client_connections[username] = conn
+        print(f"{username} has connected.")
+        return True
 
     def _disconnect_user(self, username):
         del self.client_connections[username]
@@ -84,15 +90,19 @@ class Server:
         current_user = None
 
         try:
-            # waiting for client to send its username as first message
-            data = conn.recv(1024)
-            if not data:
-                conn.close()
-                return
+            username_valid = False
+            while not username_valid:
+                # waiting for client to send its username as first message
+                data = conn.recv(1024)
+                if not data:
+                    conn.close()
+                    return
 
-            current_user = data.decode().strip()
-            self._assign_user(current_user, conn)
+                current_user = data.decode().strip()
+                username_valid = self._assign_user(current_user, conn)
 
+
+            # handle messages from client
             while True:
                 try:
                     data = conn.recv(1024)
@@ -110,11 +120,6 @@ class Server:
             else:
                 conn.close()
 
-
-    """
-    Action: GetActiveUsers format
-    {"SrcUser" : "user"}
-    """
 
     #checks active users and send them to _send_messages
     def _send_active_users_to_client(self, json_data):
@@ -186,7 +191,12 @@ class Server:
 
     # send any message to a specific client
     def _send_message_to_client(self, json_data, target_user):
-        target_conn = self.client_connections.get(target_user)
+
+        if isinstance(target_user, str): # check if target_user is the username
+            target_conn = self.client_connections.get(target_user)
+        else:
+            target_conn = target_user # assume target_user is already a connection object
+
         if not target_conn:
             print(f"Failed to send message to {target_user} - user isn't online")
             return False
@@ -196,7 +206,10 @@ class Server:
             return True
         except Exception as e:
             print(f"Failed to send message to {target_user}: {e}")
-            self._disconnect_user(target_user)
+            if isinstance(target_user, str):
+                self._disconnect_user(target_user)
+            else:
+                target_conn.close()
             return False
 
 
